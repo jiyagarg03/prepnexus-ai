@@ -1,0 +1,11 @@
+HareKrishn!
+
+start:
+
+installing, setting up
+
+create Routes:
+Route Groups
+
+creat Auth pages:
+AuthForm.tsx(components)
