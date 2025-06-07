@@ -12,3 +12,5 @@ AuthForm.tsx(components)
 
 Homepage:
 DevIcons for icon
+
+Firebase
