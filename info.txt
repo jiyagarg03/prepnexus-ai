@@ -9,3 +9,6 @@ Route Groups
 
 creat Auth pages:
 AuthForm.tsx(components)
+
+Homepage:
+DevIcons for icon
