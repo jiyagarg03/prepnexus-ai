@@ -17,3 +17,16 @@ Firebase
 
 If possibly undefined = result?
 add ?
+
+Google gemini setup:
+user choices from AI to feeed it into Gemini to generate proper interview questions
+
+Call fow:
+
+User will initiate a call with AI assistant which is structured using Vapi workflows -> 
+then the assistant will ask a series of predefined questions collecting the user's responses once all que is done -> 
+assisntant will end the call and send aa collective info to our API endpoint -> 
+then API will feed this info over to gemini and get a response back then store this data in the firestore database 
+
+
+Now, develop API end point first:
