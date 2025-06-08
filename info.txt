@@ -30,3 +30,6 @@ then API will feed this info over to gemini and get a response back then store t
 
 
 Now, develop API end point first:
+
+
+AI agent workflow:
