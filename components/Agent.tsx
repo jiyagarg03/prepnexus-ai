@@ -71,7 +71,7 @@ const Agent = ({ userName, userId, type, questions }: AgentProps) => {
           userId,
           questions: questions || [],
           finalized: true,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
         });
         router.push("/");
         console.log("Interview stored in Firebase!");
