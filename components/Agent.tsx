@@ -21,7 +21,7 @@ interface SavedMessage {
   content: string;
 }
 
-const Agent = ({ userName, userId, type }: AgentProps) => {
+const Agent = ({ userName, userId, type, questions }: AgentProps) => {
   const router = useRouter();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -61,41 +61,32 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
   }, []);
 
   useEffect(() => {
-    if (callStatus === CallStatus.FINISHED) router.push("/");
+    // Firebase storage in handleCall function
+    const onCallEnd = async () => {
+      setCallStatus(CallStatus.FINISHED);
+
+      try {
+        await addDoc(collection(db, "interviews"), {
+          userName,
+          userId,
+          questions: questions || [],
+          finalized: true,
+          createdAt: new Date(),
+        });
+        router.push("/");
+        console.log("Interview stored in Firebase!");
+      } catch (error) {
+        console.error("Error storing interview:", error);
+      }
+    };
+
+    vapi.on("call-end", onCallEnd);
+    return () => {
+      vapi.off("call-end", onCallEnd);
+    };
+
+    // if (callStatus === CallStatus.FINISHED) router.push("/");
   }, [messages, callStatus, type, userId]);
-
-  // const handleCall = async () => {
-  //   console.log("Calling VAPI...");
-  //   setCallStatus(CallStatus.CONNECTING);
-
-  //   if (type === "generate") {
-  //     await vapi.start(
-  //       undefined,
-  //       undefined,
-  //       undefined,
-  //       process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
-  //       {
-  //         variableValues: {
-  //           username: userName,
-  //           userid: userId,
-  //         },
-  //       }
-  //     );
-  //   } else {
-  //     let formattedQuestions = "";
-  //     if (questions) {
-  //       formattedQuestions = questions
-  //         .map((question) => `- ${question}`)
-  //         .join("\n");
-  //     }
-
-  //     await vapi.start(interviewer, {
-  //       variableValues: {
-  //         questions: formattedQuestions,
-  //       },
-  //     });
-  //   }
-  // };
 
   const handleCall = async () => {
     console.log("Calling VAPI...");
@@ -128,65 +119,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         },
       });
     }
-
-    // Firebase storage in handleCall function
-    try {
-      await addDoc(collection(db, "interviews"), {
-        userName,
-        userId,
-        questions: questions || [],
-        timestamp: new Date(),
-      });
-      console.log("Interview stored in Firebase!");
-    } catch (error) {
-      console.error("Error storing interview:", error);
-    }
   };
-
-  //   console.log("Calling VAPI...");
-  //   setCallStatus(CallStatus.CONNECTING);
-
-  //   if (type === "generate") {
-  //     try {
-  //       // Call your backend to generate and save interview questions
-  //       const response = await fetch("/api/vapi/generate", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           type: "technical", // or dynamically from your component props/state
-  //           role: "Frontend Developer",
-  //           level: "Junior",
-  //           techstack: "React, TypeScript",
-  //           amount: 5,
-  //           userid: userId,
-  //         }),
-  //       });
-
-  //       const data = await response.json();
-
-  //       if (!response.ok)
-  //         throw new Error(data.error || "Failed to generate interview");
-
-  //       // Now start the VAPI call using your workflow
-  //       await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-  //         variableValues: {
-  //           username: userName,
-  //           userid: userId,
-  //         },
-  //       });
-  //     } catch (error) {
-  //       console.error("Call initiation failed:", error);
-  //       setCallStatus(CallStatus.INACTIVE);
-  //     }
-  //   } else {
-  //     // If not generate, just start the call with existing questions or flow
-  //     await vapi.start(interviewer, {
-  //       variableValues: {
-  //         questions: "", // or whatever you want to pass here
-  //       },
-  //     });
-  //   }
-  // };
 
   const handleDisconnect = async () => {
     setCallStatus(CallStatus.FINISHED);
