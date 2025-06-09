@@ -8,6 +8,7 @@ import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase/client";
+import { AssistantOverrides } from "@vapi-ai/web/dist/api";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -59,51 +60,20 @@ const Agent = ({ userName, userId, type, questions }: AgentProps) => {
       vapi.off("error", onError);
     };
   }, []);
-
-  useEffect(() => {
-    // Firebase storage in handleCall function
-    const onCallEnd = async () => {
-      setCallStatus(CallStatus.FINISHED);
-
-      try {
-        await addDoc(collection(db, "interviews"), {
-          userName,
-          userId,
-          questions: questions || [],
-          finalized: true,
-          createdAt: new Date().toISOString(),
-        });
-        router.push("/");
-        console.log("Interview stored in Firebase!");
-      } catch (error) {
-        console.error("Error storing interview:", error);
-      }
-    };
-
-    vapi.on("call-end", onCallEnd);
-    return () => {
-      vapi.off("call-end", onCallEnd);
-    };
-
-    // if (callStatus === CallStatus.FINISHED) router.push("/");
-  }, [messages, callStatus, type, userId]);
-
   const handleCall = async () => {
     console.log("Calling VAPI...");
     setCallStatus(CallStatus.CONNECTING);
+    const assistantOverrides = {
+      variableValues: {
+        username: userName,
+        userid: userId,
+      },
+    };
 
     if (type === "generate") {
       await vapi.start(
-        undefined,
-        undefined,
-        undefined,
         process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
-        {
-          variableValues: {
-            username: userName,
-            userid: userId,
-          },
-        }
+        assistantOverrides as AssistantOverrides
       );
     } else {
       let formattedQuestions = "";
@@ -117,7 +87,7 @@ const Agent = ({ userName, userId, type, questions }: AgentProps) => {
         variableValues: {
           questions: formattedQuestions,
         },
-      });
+      } as AssistantOverrides);
     }
   };
 
