@@ -106,42 +106,6 @@ const Agent = ({
     };
   }, [userName, userId, questions]);
 
-  // useEffect(() => {
-  // if (callStatus === CallStatus.FINISHED) {
-  //   if (type === "generate") {
-  //     router.push("/");
-  //   } else {
-  //     handleGenerateFeedback(messages);
-  //   }
-  // }
-
-  //   // Firebase storage in handleCall function
-  //   const onCallEnd = async () => {
-  //     setCallStatus(CallStatus.FINISHED);
-
-  //     try {
-  //       await addDoc(collection(db, "interviews"), {
-  //         userName,
-  //         userId,
-  //         questions: questions || [],
-  //         finalized: true,
-  //         createdAt: new Date().toISOString(),
-  //       });
-  //       console.log("Interview stored in Firebase!");
-  //       router.push("/");
-  //     } catch (error) {
-  //       console.error("Error storing interview:", error);
-  //     }
-  //   };
-
-  //   vapi.on("call-end", onCallEnd);
-  //   return () => {
-  //     vapi.off("call-end", onCallEnd);
-  //   };
-
-  //   // if (callStatus === CallStatus.FINISHED) router.push("/");
-  // }, [messages, callStatus, type, userId]);
-
   useEffect(() => {
     if (callStatus !== CallStatus.FINISHED) return;
 

@@ -15,7 +15,7 @@ export async function getInterviewsByUserId(
     ...doc.data(),
   })) as Interview[];
 }
-// test it now, wt did u deete? route?
+
 export async function getLatestInterviews(
   params: GetLatestInterviewsParams
 ): Promise<Interview[] | null> {
