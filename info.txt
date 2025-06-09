@@ -32,35 +32,3 @@ then API will feed this info over to gemini and get a response back then store t
 Now, develop API end point first:
 
 
-AI agent workflow:
-
-
-where do u store the interview in db? in route i did tht
-await line collection
-wheree?it was in routeeeeee
-
-
-okay test if  jits working Now
-tesht? unew interview aghh its not storing u j sawww
-t working of 
-my issue rn is, its not stroing userId so i printed it in console, its 
-printing, but 
-notot
- 
-
-
- shut updo what i said
-u
-
-just start ittttttttt
-
-so it only save to db when the ques is answered?yes
-ehhh andif we cut the call? mostly brb kk my father is here
-back
-he asked me who u talking w 
-
-u asking me wht happens if i cut the call?
-initially it was not storing in db coz of permissions in firebase rules, i didnt knew tht then i chnged code here in agent, it duplicated with two format then i romoved the my added code, now am here n in this its not storing userId, althoug printing it here
-so it get generated in vapo?
-https://ai-fullstack.vercel.app/api/vapi/generate
-ehh u deleted g
