@@ -8,7 +8,6 @@ import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase/client";
-import { AssistantOverrides } from "@vapi-ai/web/dist/api";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -22,7 +21,13 @@ interface SavedMessage {
   content: string;
 }
 
-const Agent = ({ userName, userId, type, questions }: AgentProps) => {
+const Agent = ({
+  userName,
+  userId,
+  type,
+  questions,
+  interviewId,
+}: AgentProps) => {
   const router = useRouter();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -60,20 +65,109 @@ const Agent = ({ userName, userId, type, questions }: AgentProps) => {
       vapi.off("error", onError);
     };
   }, []);
+
+  const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+    console.log("Generate Feedback");
+
+    const { success, id } = {
+      success: true,
+      id: "feedback-id",
+    };
+
+    if (success && id) {
+      router.push(`/interview/${interviewId}/feedback`);
+    } else {
+      console.log("Error saving feedback");
+      router.push("/");
+    }
+  };
+
+  useEffect(() => {
+    const onCallEnd = async () => {
+      setCallStatus(CallStatus.FINISHED);
+
+      try {
+        await addDoc(collection(db, "interviews"), {
+          userName,
+          userId,
+          questions: questions || [],
+          finalized: true,
+          createdAt: new Date().toISOString(),
+        });
+        console.log("Interview stored in Firebase!");
+      } catch (error) {
+        console.error("Error storing interview:", error);
+      }
+    };
+
+    vapi.on("call-end", onCallEnd);
+    return () => {
+      vapi.off("call-end", onCallEnd);
+    };
+  }, [userName, userId, questions]);
+
+  // useEffect(() => {
+  // if (callStatus === CallStatus.FINISHED) {
+  //   if (type === "generate") {
+  //     router.push("/");
+  //   } else {
+  //     handleGenerateFeedback(messages);
+  //   }
+  // }
+
+  //   // Firebase storage in handleCall function
+  //   const onCallEnd = async () => {
+  //     setCallStatus(CallStatus.FINISHED);
+
+  //     try {
+  //       await addDoc(collection(db, "interviews"), {
+  //         userName,
+  //         userId,
+  //         questions: questions || [],
+  //         finalized: true,
+  //         createdAt: new Date().toISOString(),
+  //       });
+  //       console.log("Interview stored in Firebase!");
+  //       router.push("/");
+  //     } catch (error) {
+  //       console.error("Error storing interview:", error);
+  //     }
+  //   };
+
+  //   vapi.on("call-end", onCallEnd);
+  //   return () => {
+  //     vapi.off("call-end", onCallEnd);
+  //   };
+
+  //   // if (callStatus === CallStatus.FINISHED) router.push("/");
+  // }, [messages, callStatus, type, userId]);
+
+  useEffect(() => {
+    if (callStatus !== CallStatus.FINISHED) return;
+
+    if (type === "generate") {
+      router.push("/");
+    } else {
+      handleGenerateFeedback(messages);
+    }
+  }, [messages, callStatus, type, userId]);
+
   const handleCall = async () => {
     console.log("Calling VAPI...");
     setCallStatus(CallStatus.CONNECTING);
-    const assistantOverrides = {
-      variableValues: {
-        username: userName,
-        userid: userId,
-      },
-    };
 
     if (type === "generate") {
       await vapi.start(
+        undefined,
+        undefined,
+        undefined,
         process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
-        assistantOverrides as AssistantOverrides
+        {
+          variableValues: {
+            username: userName,
+            userid: userId,
+          },
+        }
       );
     } else {
       let formattedQuestions = "";
@@ -87,7 +181,7 @@ const Agent = ({ userName, userId, type, questions }: AgentProps) => {
         variableValues: {
           questions: formattedQuestions,
         },
-      } as AssistantOverrides);
+      });
     }
   };
 
