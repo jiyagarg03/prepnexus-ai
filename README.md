@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PrepNexus AI – Your Personalized AI Interview Companion
+
+![Next.js](https://img.shields.io/badge/Next.js-15-blue)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-2.2-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-4.x-blue)
+![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
+
+Live: [prepnexus-ai.vercel.app](https://ai-fullstack.vercel.app/sign-in)  
+Source Code: [GitHub Repository](https://github.com/jiyagarg03/prepnexus-ai)
+
+PrepNexus AI is an intelligent, full-stack interview prep platform powered by custom Vapi agents, Firebase authentication, and Google Gemini. The app enables users to simulate real interview conversations with tailored AI workflows and dynamic response generation.
+
+---
+---
+
+## Screenshots
+
+| Sign In/Sign up | Home Page | Interview Generation 
+|--------|------------------------| ------------------|
+| ![Sign In](public/screens/sign-in:sign-up.png) | ![Chat](public/screens/homepage.png) | ![Generation](public/screens/interview.png) |
+
+
+---
+
+##  Features
+
+-  Firebase Authentication (Email/Password based)
+-  Vapi Agent Workflow Integration
+-  Custom AI Assistant Creation
+-  Dynamic Interview Prompt Generation
+-  Google Gemini AI Integration
+-  Real-time Response UI
+-  TailwindCSS Theming and UI Polish
+-  Zod-based Form Validation
+
+---
+
+##  Tech Stack
+
+| Layer          | Technology                               |
+|----------------|-------------------------------------------|
+| Frontend       | Next.js 15, React 19, TailwindCSS         |
+| Auth           | Firebase (Client + Admin SDK)             |
+| AI Workflow    | Vapi SDK, Google Gemini                   |
+| Forms/UX       | React Hook Form, Zod, Sonner              |
+| Styling        | TailwindCSS, Radix UI, Lucide Icons       |
+
+---
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+git clone https://github.com/jiyagarg03/prepnexus-ai
+cd prepnexus-ai
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
+```
+FIREBASE_PROJECT_ID=
+FIREBASE_PRIVATE_KEY=
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+GOOGLE_GENERATIVE_AI_API_KEY="
 
-## Learn More
+NEXT_PUBLIC_BASE_URL=
 
-To learn more about Next.js, take a look at the following resources:
+NEXT_PUBLIC_VAPI_WEB_TOKEN=
+NEXT_PUBLIC_VAPI_WORKFLOW_ID=
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Status: 
+This project is still in development. More features like user feedback generation, and ratings are planned.
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+MIT License • © 2025 Jiya Garg
