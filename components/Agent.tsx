@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/firebase/client";
+//import { addDoc, collection } from "firebase/firestore";
+//import { db } from "@/firebase/client";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -26,8 +26,8 @@ const Agent = ({
   userId,
   type,
   questions,
-  interviewId,
-}: AgentProps) => {
+}: //  interviewId,
+AgentProps) => {
   const router = useRouter();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -83,29 +83,29 @@ const Agent = ({
     }
   };
 
-  useEffect(() => {
-    const onCallEnd = async () => {
-      setCallStatus(CallStatus.FINISHED);
+  // useEffect(() => {
+  //   const onCallEnd = async () => {
+  //     setCallStatus(CallStatus.FINISHED);
 
-      try {
-        await addDoc(collection(db, "interviews"), {
-          userName,
-          userId,
-          questions: questions || [],
-          finalized: true,
-          createdAt: new Date().toISOString(),
-        });
-        console.log("Interview stored in Firebase!");
-      } catch (error) {
-        console.error("Error storing interview:", error);
-      }
-    };
+  //     try {
+  //       await addDoc(collection(db, "interviews"), {
+  //         userName,
+  //         userId,
+  //         questions: questions || [],
+  //         finalized: true,
+  //         createdAt: new Date().toISOString(),
+  //       });
+  //       console.log("Interview stored in Firebase!");
+  //     } catch (error) {
+  //       console.error("Error storing interview:", error);
+  //     }
+  //   };
 
-    vapi.on("call-end", onCallEnd);
-    return () => {
-      vapi.off("call-end", onCallEnd);
-    };
-  }, [userName, userId, questions]);
+  //   vapi.on("call-end", onCallEnd);
+  //   return () => {
+  //     vapi.off("call-end", onCallEnd);
+  //   };
+  // }, [userName, userId, questions]);
 
   useEffect(() => {
     if (callStatus !== CallStatus.FINISHED) return;
@@ -122,13 +122,14 @@ const Agent = ({
     setCallStatus(CallStatus.CONNECTING);
 
     if (type === "generate") {
+      console.log(userName, userId);
       await vapi.start(
         undefined,
         undefined,
         undefined,
         process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
         {
-          variableValues: {
+          variable: {
             username: userName,
             userid: userId,
           },
@@ -143,8 +144,10 @@ const Agent = ({
       }
 
       await vapi.start(interviewer, {
-        variableValues: {
+        variable: {
           questions: formattedQuestions,
+          username: userName,
+          userid: userId,
         },
       });
     }
