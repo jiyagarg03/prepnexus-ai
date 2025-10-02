@@ -68,6 +68,17 @@ const InterviewDetails = async ({ params }: RouteParams) => {
         </p>
       </div>
 
+      <div className="mt-6">
+        <h2 className="text-2xl font-semibold mb-4">Interview Questions:</h2>
+        <ul className="list-decimal list-inside space-y-2">
+          {interview.questions?.map((q: string, index: number) => (
+            <li key={index} className="bg-dark-200 p-3 rounded-lg">
+              {q}
+            </li>
+          )) || <p>No questions available.</p>}
+        </ul>
+      </div>
+
       <Agent
         userName={user?.name!}
         userId={user?.id}
